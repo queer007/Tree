@@ -4,11 +4,116 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Merry Christmas</title>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            background-color: black;
+            color: white;
+            font-family: "Comic Sans MS", sans-serif;
+        }
+        canvas {
+            display: block;
+            margin: 0 auto;
+            background-color: black;
+        }
+    </style>
 </head>
 <body>
     <h1>Merry Christmas</h1>
     <canvas id="christmasCanvas" width="800" height="600"></canvas>
-    <script src="script.js"></script>
+    <script>
+        const canvas = document.getElementById('christmasCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // 绘制彩灯
+        function drawlight(x, y) {
+            const colors = ["gold", "lightblue", "pink"];
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            ctx.beginPath();
+            ctx.arc(x, y, Math.random() * 5 + 3, 0, Math.PI * 2);
+            ctx.fillStyle = color;
+            ctx.fill();
+        }
+
+        // 绘制树
+        function drawTree(x, y, height) {
+            const width = height / 4;
+            ctx.fillStyle = "darkgreen";
+            for (let i = 0; i < 3; i++) {
+                ctx.beginPath();
+                ctx.moveTo(x, y - (i * height / 3));
+                ctx.lineTo(x - width / 2, y + (i + 1) * height / 6);
+                ctx.lineTo(x + width / 2, y + (i + 1) * height / 6);
+                ctx.closePath();
+                ctx.fill();
+                // 添加彩灯
+                for (let j = 0; j < 5; j++) {
+                    drawlight(
+                        x + (Math.random() * width - width / 2),
+                        y - (i * height / 3) + Math.random() * (height / 6)
+                    );
+                }
+            }
+            // 树干
+            ctx.fillStyle = "sienna";
+            ctx.fillRect(x - width / 8, y + height / 6, width / 4, height / 6);
+        }
+
+        // 绘制五角星
+        function drawStar(cx, cy, spikes, outerRadius, innerRadius, color) {
+            ctx.save();
+            ctx.beginPath();
+            ctx.translate(cx, cy);
+            ctx.moveTo(0, -outerRadius);
+            for (let i = 0; i < spikes; i++) {
+                ctx.rotate(Math.PI / spikes);
+                ctx.lineTo(0, -innerRadius);
+                ctx.rotate(Math.PI / spikes);
+                ctx.lineTo(0, -outerRadius);
+            }
+            ctx.closePath();
+            ctx.fillStyle = color;
+            ctx.fill();
+            ctx.restore();
+        }
+
+        // 绘制雪花
+        function drawSnowflakes() {
+            ctx.beginPath();
+            ctx.fillStyle = "white";
+            for (let i = 0; i < 200; i++) {
+                const x = Math.random() * canvas.width;
+                const y = Math.random() * canvas.height;
+                const size = Math.random() * 3 + 1;
+                ctx.moveTo(x, y);
+                ctx.arc(x, y, size, 0, Math.PI * 2);
+            }
+            ctx.fill();
+        }
+
+        function drawScene() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // 绘制雪花
+            drawSnowflakes();
+
+            // 绘制圣诞树
+            drawTree(canvas.width / 2, canvas.height / 2, 200);
+
+            // 绘制星星
+            drawStar(canvas.width / 2, canvas.height / 2 - 160, 5, 20, 10, "yellow");
+
+            // Merry Christmas 文字
+            ctx.fillStyle = "red";
+            ctx.font = "40px Comic Sans MS";
+            ctx.textAlign = "center";
+            ctx.fillText("Merry Christmas!", canvas.width / 2, canvas.height - 20);
+        }
+
+        drawScene();
+    </script>
 </body>
 </html>
+
