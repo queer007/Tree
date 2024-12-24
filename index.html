@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Merry Christmas</title>
+    <title>Enhanced Merry Christmas</title>
     <style>
         body {
             margin: 0;
@@ -27,9 +27,45 @@
         const canvas = document.getElementById('christmasCanvas');
         const ctx = canvas.getContext('2d');
 
+        // 雪花数据
+        const snowflakes = [];
+
+        // 初始化雪花
+        function createSnowflakes() {
+            for (let i = 0; i < 150; i++) {
+                snowflakes.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: Math.random() * 3 + 1,
+                    speed: Math.random() * 2 + 0.5,
+                });
+            }
+        }
+
+        // 更新雪花位置
+        function updateSnowflakes() {
+            for (let flake of snowflakes) {
+                flake.y += flake.speed;
+                if (flake.y > canvas.height) {
+                    flake.y = 0;
+                    flake.x = Math.random() * canvas.width;
+                }
+            }
+        }
+
+        // 绘制雪花
+        function drawSnowflakes() {
+            ctx.fillStyle = "white";
+            for (let flake of snowflakes) {
+                ctx.beginPath();
+                ctx.arc(flake.x, flake.y, flake.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
         // 绘制彩灯
         function drawlight(x, y) {
-            const colors = ["gold", "lightblue", "pink"];
+            const colors = ["gold", "lightblue", "pink", "red", "green"];
             const color = colors[Math.floor(Math.random() * colors.length)];
             ctx.beginPath();
             ctx.arc(x, y, Math.random() * 5 + 3, 0, Math.PI * 2);
@@ -41,24 +77,25 @@
         function drawTree(x, y, height) {
             const width = height / 4;
             ctx.fillStyle = "darkgreen";
-            for (let i = 0; i < 3; i++) {
+            for (let i = 0; i < 5; i++) {
                 ctx.beginPath();
-                ctx.moveTo(x, y - (i * height / 3));
-                ctx.lineTo(x - width / 2, y + (i + 1) * height / 6);
-                ctx.lineTo(x + width / 2, y + (i + 1) * height / 6);
+                ctx.moveTo(x, y - (i * height / 5));
+                ctx.lineTo(x - width / 2, y + (i + 1) * height / 10);
+                ctx.lineTo(x + width / 2, y + (i + 1) * height / 10);
                 ctx.closePath();
                 ctx.fill();
+
                 // 添加彩灯
-                for (let j = 0; j < 5; j++) {
+                for (let j = 0; j < 8; j++) {
                     drawlight(
                         x + (Math.random() * width - width / 2),
-                        y - (i * height / 3) + Math.random() * (height / 6)
+                        y - (i * height / 5) + Math.random() * (height / 10)
                     );
                 }
             }
             // 树干
             ctx.fillStyle = "sienna";
-            ctx.fillRect(x - width / 8, y + height / 6, width / 4, height / 6);
+            ctx.fillRect(x - width / 8, y + height / 5, width / 4, height / 6);
         }
 
         // 绘制五角星
@@ -79,20 +116,7 @@
             ctx.restore();
         }
 
-        // 绘制雪花
-        function drawSnowflakes() {
-            ctx.beginPath();
-            ctx.fillStyle = "white";
-            for (let i = 0; i < 200; i++) {
-                const x = Math.random() * canvas.width;
-                const y = Math.random() * canvas.height;
-                const size = Math.random() * 3 + 1;
-                ctx.moveTo(x, y);
-                ctx.arc(x, y, size, 0, Math.PI * 2);
-            }
-            ctx.fill();
-        }
-
+        // 绘制场景
         function drawScene() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -112,8 +136,17 @@
             ctx.fillText("Merry Christmas!", canvas.width / 2, canvas.height - 20);
         }
 
-        drawScene();
+        // 动画循环
+        function animate() {
+            updateSnowflakes();
+            drawScene();
+            requestAnimationFrame(animate);
+        }
+
+        createSnowflakes();
+        animate();
     </script>
 </body>
 </html>
+
 
